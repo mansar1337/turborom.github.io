@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POCO F3 - Turbo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Turbo для POCO F3</h1>
+        <p>Платная сборка Turbo HyperOS</p>
+    </header>
+    <div class="container">
+        <section id="f3">
+            <h2>Информация о сборке</h2>
+            <p>Turbo для POCO F3 — это оптимизированная версия HyperOS с улучшенной производительностью, новыми функциями и кастомизацией.</p>
+            <h3>Стоимость и получение</h3>
+            <p style="color: #e53e3e; font-weight: bold;">Данная сборка распространяется на платной основе.</p>
+            <h3>Скачать сборку</h3>
+            <a href="https://t.me/TURBOromMiui/242" class="download-link" target="_blank">Скачать Turbo для POCO F3</a>
+            <h3>Автор</h3>
+            <p>Разработчик: <a href="http://4pda.to/forum/index.php?showuser=9976456" class="author-link" target="_blank">EnOt.P!</a></p>
+        </section>
+    </div>
+    <footer>
+        <p>© 2025 Turbo Project. Все права защищены.</p>
+    </footer>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    <div class="nav-island">
+        <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+        <a href="download.html"><i class="fas fa-download"></i> Скачать</a>
+    </div>
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const deviceItems = document.querySelectorAll('.device-item');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                this.textContent = '🌙';
+                deviceItems.forEach(item => item.style.backgroundColor = 'var(--card-bg)');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                this.textContent = '☀️';
+                deviceItems.forEach(item => item.style.backgroundColor = 'var(--card-bg)');
+            }
+        }
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        let lastScroll = 0;
+        const navIsland = document.querySelector('.nav-island');
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > lastScroll) {
+                navIsland.classList.remove('visible');
+            } else {
+                navIsland.classList.add('visible');
+            }
+            lastScroll = currentScroll <= 0 ? 0 : currentScroll;
+        });
+        navIsland.classList.add('visible');
+    </script>
+</body>
+</html> 

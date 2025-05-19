@@ -1,0 +1,107 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbo - HyperOS Modification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Turbo - HyperOS Modification</h1>
+        <p>Улучшенная версия HyperOS для ваших устройств</p>
+    </header>
+    <div class="container">
+        <section id="home">
+            <h2>Добро пожаловать в Turbo</h2>
+            <p>Turbo — это модифицированная версия HyperOS, созданная для повышения производительности, улучшения пользовательского опыта и добавления новых функций.</p>
+        </section>
+        <section id="about">
+            <h2>О проекте</h2>
+            <p>Проект Turbo направлен на оптимизацию HyperOS, предлагая более быструю и плавную работу, улучшенное управление батареей и уникальные настройки интерфейса.</p>
+        </section>
+    </div>
+    <footer>
+        <p>© 2025 Turbo Project. Все права защищены.</p>
+    </footer>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    <div class="nav-island">
+        <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+        <a href="download.html"><i class="fas fa-download"></i> Скачать</a>
+    </div>
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const deviceItems = document.querySelectorAll('.device-item');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                this.textContent = '🌙';
+                deviceItems.forEach(item => item.style.backgroundColor = 'var(--card-bg)');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                this.textContent = '☀️';
+                deviceItems.forEach(item => item.style.backgroundColor = 'var(--card-bg)');
+            }
+        }
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        let lastScroll = 0;
+        const navIsland = document.querySelector('.nav-island');
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > lastScroll) {
+                navIsland.classList.remove('visible');
+            } else {
+                navIsland.classList.add('visible');
+            }
+            lastScroll = currentScroll <= 0 ? 0 : currentScroll;
+        });
+        navIsland.classList.add('visible');
+    </script>
+</body>
+</html>
